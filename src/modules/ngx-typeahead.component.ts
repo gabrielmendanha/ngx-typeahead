@@ -73,21 +73,38 @@ import {
     `
   ],
   template: `
-  <ng-template #suggestionsTplRef>
-  <section class="ta-results list-group" *ngIf="showSuggestions">
-    <div class="ta-backdrop" (click)="hideSuggestions()"></div>
-    <button type="button" class="ta-item list-group-item"
-      *ngFor="let result of results; let i = index;"
-      [class.active]="markIsActive(i, result)"
-      (click)="handleSelectionClick(result, i)">
-      <span *ngIf="!taItemTpl"><i class="fa fa-search"></i> {{ result }}</span>
-      <ng-template
-        [ngTemplateOutlet]="taItemTpl"
-        [ngTemplateOutletContext]="{ $implicit: {result: result, index: i} }"
-      ></ng-template>
-    </button>
-  </section>
-  </ng-template>
+    <ng-template #suggestionsTplRef>
+      <div class="favorite-menu">
+        <div class="row">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-primary">Insights</button>
+            <button type="button" class="btn btn-primary">dicas</button>
+            <button type="button" class="btn btn-primary">Técnica</button>
+            <button type="button" class="btn btn-primary">Dúvida</button>
+          </div>
+        </div>
+      </div>
+      <section class="ta-results list-group" *ngIf="showSuggestions">
+        <div class="ta-backdrop" (click)="hideSuggestions()"></div>
+        <button
+          type="button"
+          class="ta-item list-group-item"
+          *ngFor="let result of results; let i = index"
+          [class.active]="markIsActive(i, result)"
+          (click)="handleSelectionClick(result, i)"
+        >
+          <span *ngIf="!taItemTpl"
+            ><i class="fa fa-search"></i> {{ result }}</span
+          >
+          <ng-template
+            [ngTemplateOutlet]="taItemTpl"
+            [ngTemplateOutletContext]="{
+              $implicit: { result: result, index: i }
+            }"
+          ></ng-template>
+        </button>
+      </section>
+    </ng-template>
   `
 })
 export class NgxTypeAheadComponent implements OnInit, OnDestroy {
@@ -143,7 +160,7 @@ export class NgxTypeAheadComponent implements OnInit, OnDestroy {
     private viewContainer: ViewContainerRef,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   @HostListener('keydown', ['$event'])
   handleEsc(event: KeyboardEvent) {
@@ -207,8 +224,8 @@ export class NgxTypeAheadComponent implements OnInit, OnDestroy {
   assignResults(results: any[]) {
     const labelForDisplay = this.taListItemLabel;
     this.resultsAsItems = results;
-    this.results = results.map(
-      (item: string | any) => (labelForDisplay ? item[labelForDisplay] : item)
+    this.results = results.map((item: string | any) =>
+      labelForDisplay ? item[labelForDisplay] : item
     );
     this.suggestionIndex = NO_INDEX;
     if (!results || !results.length) {
@@ -304,7 +321,8 @@ export class NgxTypeAheadComponent implements OnInit, OnDestroy {
       ? this.resultsAsItems[this.suggestionIndex]
       : suggestion;
     this.hideSuggestions();
-    const resolvedResult = this.suggestionIndex === NO_INDEX ? this.searchQuery : result;
+    const resolvedResult =
+      this.suggestionIndex === NO_INDEX ? this.searchQuery : result;
     this.taSelected.emit(resolvedResult);
   }
 
